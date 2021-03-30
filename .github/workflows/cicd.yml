@@ -3,7 +3,7 @@ name: CICD
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 env:
@@ -24,7 +24,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-20.04
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     needs: docs-test
     steps:
       - name: Checkout
