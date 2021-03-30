@@ -1,0 +1,119 @@
+site_name: Lab catalog
+nav:
+  - Home: index.md
+  - Routing & Switching:
+      - BGP VPLS Deep dive: rs/bgp-vpls.md
+  - Telemetry:
+      - SR Linux streaming telemetry: telemetry/srl-telemetry.md
+  - Automation:
+      - coming soon: automation/comingsoon.md
+  - Security:
+      - Certificate management with CMPv2: security/cmpv2.md
+
+site_author: Roman Dodin
+site_description: >-
+  Opensource catalog of containerlab based labs
+# Repository
+repo_name: hellt/clabs
+repo_url: https://github.com/hellt/clabs
+edit_uri: ""
+theme:
+  name: material
+  custom_dir: docs/overrides
+
+  # 404 page
+  static_templates:
+    - 404.html
+
+  # Don't include MkDocs' JavaScript
+  include_search_page: false
+  search_index_only: true
+
+  features:
+    - navigation.top
+    - navigation.instant
+    - navigation.tabs
+
+  language: en
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: cyan
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: cyan
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  font:
+    text: Manrope
+    code: Fira Mono
+  icon:
+    logo: fontawesome/solid/flask
+  favicon: images/flask.svg
+
+# Plugins
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+# Customization
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/hellt
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/ntdvps
+
+extra_css:
+  - stylesheets/extra.css
+
+# Extensions
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.attr_list
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - markdown.extensions.def_list
+  - markdown.extensions.footnotes
+  - markdown.extensions.meta
+  - markdown.extensions.toc:
+      permalink: "#"
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight:
+      linenums_style: pymdownx-inline
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+google_analytics:
+  - UA-101537614-3
+  - auto
