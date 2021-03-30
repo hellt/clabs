@@ -21,7 +21,7 @@ As the article was done before Nokia introduced MD-CLI, the configuration snippe
 
 ## Quickstart
 1. Ensure that your host supports virtualization and/or nested virtualization in case of a VM.
-2. [Install](../install.md)[^4] containerlab.
+2. [Install](https://containerlab.srlinux.dev/install/)[^4] containerlab.
 3. Build if needed, vrnetlab container images for the routers used in the lab.
 4. Clone [lab repository](https://github.com/hellt/bgp-vpls-lab).
 5. Deploy the lab topology `clab dep -t vpls.clab.yml`
