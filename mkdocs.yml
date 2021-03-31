@@ -5,12 +5,14 @@ nav:
       - About: rs/rs.md
       - BGP VPLS Deep dive: rs/bgp-vpls.md
   - Telemetry:
-      - SR Linux streaming telemetry: telemetry/srl-telemetry.md
+      - About: telemetry/telemetry.md
+      - Securing gNMI with TLS: security/gnmitls.md
   - Automation:
       - coming soon: automation/comingsoon.md
   - Security:
       - About: security/security.md
       - Certificate management with CMPv2: security/cmpv2.md
+      - Securing gNMI with TLS: security/gnmitls.md
 
 site_author: Roman Dodin
 site_description: >-
