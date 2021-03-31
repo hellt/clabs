@@ -6,7 +6,7 @@
 | **Lab location**              | :material-github: [hellt/bgp-vpls-lab](https://github.com/hellt/bgp-vpls-lab)                       |
 | **Topology file**             | [vpls.clab.yml][topofile]                                                                           |
 | **Version information**[^2]   | `containerlab:0.10.1`, `vr-sros:20.10.R1`, `vr-vmx:20.4R1.12`, `docker-ce:19.03.13`, `vrnetlab`[^3] |
-| **Author**                    | [Roman Dodin](https://twitter.com/ntdvps)                                                           |
+| **Authors**                   | [Roman Dodin](https://twitter.com/ntdvps)                                                           |
 
 ## Description
 This lab demonstrates how containerlab can be used in a classical networking labs where the prime focus is not on the containerized NOS, but on a classic VM-based routers.
