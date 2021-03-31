@@ -2,6 +2,7 @@ site_name: Lab catalog
 nav:
   - Home: index.md
   - Routing & Switching:
+      - About: rs/rs.md
       - BGP VPLS Deep dive: rs/bgp-vpls.md
   - Telemetry:
       - SR Linux streaming telemetry: telemetry/srl-telemetry.md
