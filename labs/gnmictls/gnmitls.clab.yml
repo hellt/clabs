@@ -1,0 +1,7 @@
+name: gnmi
+topology:
+  nodes:
+    sr:
+      kind: vr-sros
+      image: vrnetlab/vr-sros:21.2.R1
+      license: _license.txt
