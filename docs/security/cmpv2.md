@@ -3,7 +3,7 @@
 | **Description**               | Certificate Management with CMPv2                                                    |
 | **Components**                | Nokia SR OS, EJBCA                                                                   |
 | **Resource requirements**[^1] | :fontawesome-solid-microchip: 2 <br/>:fontawesome-solid-memory: 6 GB                 |
-| **Topology file**             | [cmp.clab.yml](../../labs/cmpv2/cmp.clab.yml)                                        |
+| **Topology file**             | [cmp.clab.yml](https://github.com/hellt/clabs/blob/main/labs/cmpv2/cmp.clab.yml)     |
 | **Version information**[^2]   | `containerlab:0.12.0`, `vr-sros:21.2.R1`, `docker-ce:19.03.13`, `vrnetlab:0.2.3`[^3] |
 | **Authors**                   | Colin Bookham, [Roman Dodin](https://twitter.com/ntdvps)                             |
 
@@ -54,7 +54,7 @@ To make use of CMPv2 we need to have a CA that supports that protocol. This lab 
     The purpose of this lab is to provide a complete environment to demonstrate how CMPv2 can be used to manage certificates in an operator' network.
 
 ## Deploying a lab
-As usual with containerlab labs any deployment is a one-click task. Copy this lab' [clab file](../../labs/cmpv2/cmp.clab.yml), ensure that you have `_license.txt` file for SR OS node available in your current working directory and deploy.
+As usual with containerlab labs any deployment is a one-click task. Copy this lab' [clab file](https://github.com/hellt/clabs/blob/main/labs/cmpv2/cmp.clab.yml), ensure that you have `_license.txt` file for SR OS node available in your current working directory and deploy.
 
 ```
 ❯ clab dep -t cmp.clab.yml
