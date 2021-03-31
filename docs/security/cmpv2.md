@@ -14,39 +14,37 @@ Some state of the art management protocols like [gNMI](https://github.com/openco
 ??? "but what about unsecured gNMI?"
     It is a networking vendor's hack that allowed users to start playing with gNMI without setting up PKI infra. While it is possible, the gNMI specification clearly states that "The session between the client and server MUST be encrypted using TLS...".
 
-In case of gNMI, TLS protocol is used to secure the session between the client and the server. That means:
+In case of gNMI, TLS protocol is used to secure the session between the client and the server. That inherently means:
 
 * Certificate Authority (CA) must exist
 * a set of keys and a certificate signing request (csr) must be created for a gNMI server (a router)
 * CA has to sign this certificate
 * A router needs to import this certificate and use it for gNMI protocol it runs
 
-Additionally Certificate Revocation Lists may be used to manage certificates revocation, but for the sake of simplicity we will not consider it here.
-
-As streaming telemetry and, consequently, gNMI are getting more popular and leaving the labs' simplified environments, operators are getting bothered with **how to enable certificate management at scale**?
+As streaming telemetry and, consequently, gNMI are getting more popular, outgrowing the labs' simplified environments, operators are getting challenged with a question of **how to enable certificate management for network devices at scale?**
 
 
-## Certificate management in an operator network
+## Certificate management in an operator' network
 If you think that creating a CA and signing a few certificates is an easy thing to pull off with something like `openssl` or `certbot`, you might want to reconsider when a network of an operator is concerned.
 
 Network Operating Systems are not suitable to be used for something like `certbot`, as they won't be able to pass ACME challenge, nor DNS one. The manual certificate management with `openssl` can't stand a chance in a network with dozens and hundreds of nodes, this will get unmaintainable rather quickly.
 
-Ideally a workflow for maintaining certificates lifecycle in the operators network could look like follows:
+Ideally a workflow for maintaining certificates lifecycle in the operators network could look like this:
 
 1. CA maintains a registry of authenticated hosts for which it can enroll a certificate
 2. A node generates or obtains private/public keys
-3. A node contacts CA, authenticates and asks to issue/sign the certificate for this node
+3. A node contacts CA, authenticates and asks to issue/sign the certificate for it
 4. The signed certificate is transferred from CA to the node over the same channel
-5. Node installs that certificate and can use it
+5. Node installs that certificate
 6. Before the certificate is about to expire, the node reaches to CA and asks it to issue a new certificate that the node uses instead of the one that is expiring
 
 ## CMPv2
 
 Luckily, a few protocols exist to adhere to a workflow like that, and in this tutorial we will focus on one of them - CMPv2[^5].
 
-CMPv2 is extensively used in 4/5G networks to manage certificates between the infrastructure nodes and it is also implemented by most networking vendors.
+CMPv2 is extensively used in mobile networks to manage certificates between the infrastructure nodes and it is also implemented by most networking vendors.
 
-Without going into much details it is sufficient to say, that CMPv2 adheres to the workflow outlined above and this lab will demonstrate how Nokia SR OS router can enroll a certificate with a CA and update it when needed.
+Without going into much details it is sufficient to say, that CMPv2 follows the workflow outlined above and this lab will demonstrate how Nokia SR OS router can initiate a certificate enrollment process and update it when needed.
 
 To make use of CMPv2 we need to have a CA that supports that protocol. This lab uses EJBCA server from primekey via their official [docker image](https://hub.docker.com/r/primekey/ejbca-ce).
 
@@ -79,17 +77,17 @@ INFO[0001] Writing /etc/hosts file
     ```  
     This will save the EJBCA database under the `/home/ejbca` dir on the container host
 
-When the lab starts, the EJBCA enters its initialization routine. You can monitor the progress with `docker logs -f clab-cmp-ejbca`. Once finished, the EJBCA web server will be available via ports `50080` and `8443`.
+When the lab starts, the EJBCA enters its initialization routine. You can monitor the progress with `docker logs -f clab-cmp-ejbca`. Once finished, the EJBCA web server will be available via `8443` port.
 
 ## EJBCA Configuration
-EJBCA exposes web interface for its configuration. To access the main admin panel we use HTTPS connection over 8443 port: https://localhost:8443/ejbca/adminweb/
+EJBCA exposes web interface for its configuration. To access the main admin panel we use HTTPS connection over 8443 port - `https://localhost:8443/ejbca/adminweb/` - which is exposed by containerlab to 8443 port of the container host.
 
 ![admin](https://gitlab.com/rdodin/pics/-/wikis/uploads/afe7c909f9d3087a2393428235442683/image.png)
 
 ### CMP Alias
 From the EJBCA perspective the CMP protocol configuration is done with creating a "CMP Alias".
 
-From the EJBCA Administration home page, select CMP Configuration in the left hand pane (under System Configuration) and add a CMP Alias; in our case named "CMP-Server".
+On the EJBCA Administration home page, select CMP Configuration in the left hand pane (under System Configuration) and add a CMP Alias; in our case named "CMP-Server".
 
 Once it is added, select edit, and then in the CMP Authentication Module ensure that "DnPartPwd" is selected and that the Subject DN Part is CN. This is used to extract the username of the node from its CN field when the node reaches out to CA and asks to enroll its certificate.
 
@@ -140,14 +138,14 @@ From the EJBCA Administration home page, select "Add End Entity" in the left han
 When all fields have been completed, select Add at the bottom of the screen. This completes EJBCA configuration.
 
 ## CA certificate
-To let our SR OS node to verify the certificate chain we need to transfer the CA certificate to it.
+To let our SR OS node to verify the certificate chain and be able to use CMPv2 protocol with the EJBCA, we need to transfer the CA certificate to it.
 
-CA certificate of the EJBCA server can be downloaded from the Registration Authority.
+CA certificate of the EJBCA server can be downloaded from the Registration Authority server that runs on EJBCA node.
 
 From the EJBCA Administration homepage, in the left hand pane select RA Web, which opens up another "EJBCA's RA GUI" tab. From here select "CA Certificates and CRLs" from the options along the top of the screen, and then download the Management CA Certificate in PEM format simply by selecting the appropriate link.
 
 !!!info
-    Management CA certificate can also be downloaded from the headless VM using lynx or other text-based browser.
+    Management CA certificate can also be downloaded from the headless VM using lynx or any other text-based browser.
 
 Next copy over this certificate to the SR OS node:
 

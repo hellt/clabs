@@ -7,7 +7,6 @@ topology:
       env:
         TLS_SETUP_ENABLED: simple
       ports:
-        - 50080:80
         - 8443:8443
     sr:
       kind: vr-sros
