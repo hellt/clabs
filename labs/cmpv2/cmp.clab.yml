@@ -1,0 +1,14 @@
+name: cmp
+topology:
+  nodes:
+    ejbca:
+      kind: linux
+      image: primekey/ejbca-ce
+      env:
+        TLS_SETUP_ENABLED: simple
+      ports:
+        - 8443:8443
+    sr:
+      kind: vr-sros
+      image: vrnetlab/vr-sros:21.2.R1
+      license: _license.txt

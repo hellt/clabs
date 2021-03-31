@@ -9,3 +9,4 @@ IgnoreSSLVerify: true
 IgnoreDirs:
   - overrides
 IgnoreInternalEmptyHash: true
+IgnoreEmptyHref: true
