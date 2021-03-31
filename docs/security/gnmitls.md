@@ -203,7 +203,7 @@ gNMI version: 0.7.0
 <SNIP>
 ```
 
-Feel free to examine the [pcap](https://gitlab.com/rdodin/pics/-/wikis/uploads/f2ab8e8ee7a5cd7f8f03a72528ca87bc/gnmic-tls-sros.pcapng) I captured with [containerlab wireshark integration](../manual/wireshark.md) that shows the flow of TCP handshake with TLS negotiation for the same gNMI Capabilities request. 
+Feel free to examine the [pcap](https://gitlab.com/rdodin/pics/-/wikis/uploads/f2ab8e8ee7a5cd7f8f03a72528ca87bc/gnmic-tls-sros.pcapng) I captured with [containerlab wireshark integration](https://containerlab.srlinux.dev/manual/wireshark/) that shows the flow of TCP handshake with TLS negotiation for the same gNMI Capabilities request. 
 
 ## Summary
 Pretty neat, right? With just the two commands ([`tools cert ca create`](https://containerlab.srlinux.dev/cmd/tools/cert/ca/create/) and [`tools cert sign`](https://containerlab.srlinux.dev/cmd/tools/cert/sign/)) we managed to perform a lot of actions in the background which resulted in a signed CA and node certificates.
