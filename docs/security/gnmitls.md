@@ -3,7 +3,7 @@
 | **Description**               | Securing gNMI with containerlab generated certificates                                              |
 | **Components**                | Nokia SR OS                                                                                         |
 | **Resource requirements**[^1] | :fontawesome-solid-microchip: 2 <br/>:fontawesome-solid-memory: 6 GB                                |
-| **Topology file**             | [gnmictls.clab.yml](https://github.com/hellt/clabs/blob/main/labs/gnmitls/gnmictls.clab.yml)        |
+| **Topology file**             | [gnmi-tls.clab.yml](https://github.com/hellt/clabs/blob/main/labs/gnmi-tls/gnmi-tls.clab.yml)       |
 | **Version information**[^2]   | `containerlab:0.12.0`, `vr-sros:21.2.R1`, `docker-ce:19.03.13`, `vrnetlab:0.2.3`[^3], `gnmic:0.9.0` |
 
 ## Description
