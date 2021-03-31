@@ -116,5 +116,5 @@ markdown_extensions:
   - pymdownx.tilde
 
 google_analytics:
-  - UA-101537614-3
+  - UA-101537614-4
   - auto
