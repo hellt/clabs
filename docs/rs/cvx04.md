@@ -22,7 +22,7 @@ This is a "Cumulus In The Cloud" topology designed to demonstrate some of the ad
 
 ## Instructions
 
-Each configuration option is provided in its own configuration file -- [`symm-mh.clab.yml`][topo-mh] or [`symm-mlag.clab.yml`][topo-mlag]. See [instructions](/lab-examples/lab-examples/#how-to-deploy-a-lab-from-the-lab-catalog) for how to deploy a topology. 
+Each configuration option is provided in its own configuration file -- [`symm-mh.clab.yml`][topo-mh] or [`symm-mlag.clab.yml`][topo-mlag]. 
 
 Once up, each node can be accessed via ssh using its hostname (automatically populated in your `/etc/hosts` file) and the default credentials `root/root`:
 
