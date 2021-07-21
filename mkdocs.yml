@@ -4,6 +4,8 @@ nav:
   - Routing & Switching:
       - About: rs/rs.md
       - BGP VPLS Deep dive: rs/bgp-vpls.md
+      - Cumulus Test Drive: rs/cvx03.md
+      - Cumulus In The Cloud: rs/cvx04.md
   - Telemetry:
       - About: telemetry/telemetry.md
       - Securing gNMI with TLS: security/gnmitls.md
