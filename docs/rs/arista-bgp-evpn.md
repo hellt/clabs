@@ -1,11 +1,11 @@
-|                               |                                                                                              |
-| ----------------------------- | -------------------------------------------------------------------------------------------- |
-| **Description**               | Arista BGP EVPN                                                                              |
-| **Components**                | Arista cEOS                                                                                  |
-| **Resource requirements**[^1] | :fontawesome-solid-microchip: 4 <br/>:fontawesome-solid-memory: 8 GB                         |
-| **Topology file**             | [ceos-evpn-overlaid.clab.yml](../../labs/arista-bgp-evpn/ceos-evpn-overlaid.clab.yml)        |
-| **Version information**[^2]   | `containerlab:0.19.1`                                                                        |
-| **Authors**                   | [Dharmesh Shah](https://github.com/dharmbhai) and [Dave Varnum](https://overlaid.net/about/) |
+|                               |                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Description**               | Arista BGP EVPN                                                                                                          |
+| **Components**                | Arista cEOS                                                                                                              |
+| **Resource requirements**[^1] | :fontawesome-solid-microchip: 4 <br/>:fontawesome-solid-memory: 8 GB                                                     |
+| **Topology file**             | [ceos-evpn-overlaid.clab.yml](https://github.com/hellt/clabs/blob/main/labs/arista-bgp-evpn/ceos-evpn-overlaid.clab.yml) |
+| **Version information**[^2]   | `containerlab:0.19.1`                                                                                                    |
+| **Authors**                   | [Dharmesh Shah](https://github.com/dharmbhai) and [Dave Varnum](https://overlaid.net/about/)                             |
 
 ## Description
 The topology and configs are based on the [Arista BGP EVPN – Configuration Example](https://overlaid.net/2019/01/27/arista-bgp-evpn-configuration-example/).
