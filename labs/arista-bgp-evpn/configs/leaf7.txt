@@ -1,0 +1,141 @@
+leaf7#sh run
+! Command: show running-config
+! device: leaf7 (cEOSLab, EOS-4.26.2.1F-23777891.42621F (engineering build))
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 $6$cWKArxj6dYgQH.xU$w.3LWbYgR1.jcF7ESBq.v1V9C30aDTojGweCkpWr8P/L7aVxfm2lzRGCcKAmJWW/oUpu3MBEQnpv6FWOdKeJm0
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname leaf7
+!
+spanning-tree mode mstp
+no spanning-tree vlan-id 4090
+!
+vlan 78
+!
+vlan 4090
+   name mlag-peer
+   trunk group mlag-peer
+!
+vrf instance gold
+!
+management api http-commands
+   no shutdown
+!
+management api gnmi
+   transport grpc default
+!
+management api netconf
+   transport ssh default
+!
+interface Port-Channel999
+   description MLAG Peer
+   switchport mode trunk
+   switchport trunk group mlag-peer
+   spanning-tree link-type point-to-point
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Ethernet9
+   description mlag peer link
+   channel-group 999 mode active
+!
+interface Ethernet10
+   description mlag peer link
+   channel-group 999 mode active
+!
+interface Ethernet11
+   description spine1
+   mtu 9214
+   no switchport
+   ip address 10.0.1.13/31
+!
+interface Ethernet12
+   description spine2
+   mtu 9214
+   no switchport
+   ip address 10.0.2.13/31
+!
+interface Loopback0
+   ip address 10.0.250.17/32
+!
+interface Loopback1
+   ip address 10.0.255.14/32
+!
+interface Management0
+   ip address 172.20.20.9/24
+   ipv6 address 2001:172:20:20::9/64
+!
+interface Vlan78
+   vrf gold
+   ip address 10.78.78.2/24
+   ip virtual-router address 10.78.78.1
+!
+interface Vlan4090
+   no autostate
+   ip address 10.0.199.254/31
+!
+interface Vxlan1
+   vxlan source-interface Loopback1
+   vxlan udp-port 4789
+   vxlan vrf gold vni 100001
+   vxlan learn-restrict any
+!
+ip virtual-router mac-address c0:01:ca:fe:ba:be
+!
+ip routing
+ip routing vrf gold
+!
+mlag configuration
+   domain-id leafs
+   local-interface Vlan4090
+   peer-address 10.0.199.255
+   peer-link Port-Channel999
+!
+router bgp 65004
+   router-id 10.0.250.17
+   no bgp default ipv4-unicast
+   distance bgp 20 200 200
+   maximum-paths 4 ecmp 64
+   neighbor evpn peer group
+   neighbor evpn remote-as 65000
+   neighbor evpn update-source Loopback0
+   neighbor evpn ebgp-multihop 3
+   neighbor evpn send-community extended
+   neighbor evpn maximum-routes 12000 warning-only
+   neighbor underlay peer group
+   neighbor underlay remote-as 65000
+   neighbor underlay maximum-routes 12000 warning-only
+   neighbor underlay_ibgp peer group
+   neighbor underlay_ibgp remote-as 65004
+   neighbor underlay_ibgp next-hop-self
+   neighbor underlay_ibgp maximum-routes 12000 warning-only
+   neighbor 10.0.1.12 peer group underlay
+   neighbor 10.0.2.12 peer group underlay
+   neighbor 10.0.199.255 peer group underlay_ibgp
+   neighbor 10.0.250.1 peer group evpn
+   neighbor 10.0.250.2 peer group evpn
+   !
+   address-family evpn
+      neighbor evpn activate
+   !
+   address-family ipv4
+      neighbor underlay activate
+      neighbor underlay_ibgp activate
+      network 10.0.250.17/32
+      network 10.0.255.14/32
+   !
+   vrf gold
+      rd 10.0.250.17:1
+      route-target import evpn 1:100001
+      route-target export evpn 1:100001
+      redistribute connected
+!
+end
+leaf7#

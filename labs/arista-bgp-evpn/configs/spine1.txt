@@ -1,0 +1,136 @@
+spine1#sh run
+! Command: show running-config
+! device: spine1 (cEOSLab, EOS-4.26.2.1F-23777891.42621F (engineering build))
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 $6$mHcklaGgvaTynxmZ$g5vShp8sTWzBjH7o5mWrqObQXqJftYgSlM9MS/uExuztN0gQNZ6qK9MW.hPkcQuMPGrXRKcsSUI5jUaYJTt/j1
+!
+switchport default mode routed
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname spine1
+!
+spanning-tree mode mstp
+!
+management api http-commands
+   no shutdown
+!
+management api gnmi
+   transport grpc default
+!
+management api netconf
+   transport ssh default
+!
+interface Ethernet1
+   description leaf1
+   mtu 9214
+   no switchport
+   ip address 10.0.1.0/31
+!
+interface Ethernet2
+   description leaf2
+   mtu 9214
+   no switchport
+   ip address 10.0.1.2/31
+!
+interface Ethernet3
+   description leaf3
+   mtu 9214
+   no switchport
+   ip address 10.0.1.4/31
+!
+interface Ethernet4
+   description leaf4
+   mtu 9214
+   no switchport
+   ip address 10.0.1.6/31
+!
+interface Ethernet5
+   description leaf5
+   mtu 9214
+   no switchport
+   ip address 10.0.1.8/31
+!
+interface Ethernet6
+   description leaf6
+   mtu 9214
+   no switchport
+   ip address 10.0.1.10/31
+!
+interface Ethernet7
+   description leaf7
+   mtu 9214
+   no switchport
+   ip address 10.0.1.12/31
+!
+interface Ethernet8
+   description leaf8
+   mtu 9214
+   no switchport
+   ip address 10.0.1.14/31
+!
+interface Loopback0
+   ip address 10.0.250.1/32
+!
+interface Management0
+   ip address 172.20.20.10/24
+   ipv6 address 2001:172:20:20::a/64
+!
+ip routing
+!
+router bgp 65000
+   router-id 10.0.250.1
+   no bgp default ipv4-unicast
+   distance bgp 20 200 200
+   maximum-paths 4 ecmp 64
+   neighbor evpn peer group
+   neighbor evpn next-hop-unchanged
+   neighbor evpn update-source Loopback0
+   neighbor evpn ebgp-multihop 3
+   neighbor evpn send-community extended
+   neighbor evpn maximum-routes 12000 warning-only
+   neighbor 10.0.1.1 remote-as 65001
+   neighbor 10.0.1.3 remote-as 65001
+   neighbor 10.0.1.5 remote-as 65002
+   neighbor 10.0.1.7 remote-as 65002
+   neighbor 10.0.1.9 remote-as 65003
+   neighbor 10.0.1.11 remote-as 65003
+   neighbor 10.0.1.13 remote-as 65004
+   neighbor 10.0.1.15 remote-as 65004
+   neighbor 10.0.250.11 peer group evpn
+   neighbor 10.0.250.11 remote-as 65001
+   neighbor 10.0.250.12 peer group evpn
+   neighbor 10.0.250.12 remote-as 65001
+   neighbor 10.0.250.13 peer group evpn
+   neighbor 10.0.250.13 remote-as 65002
+   neighbor 10.0.250.14 peer group evpn
+   neighbor 10.0.250.14 remote-as 65002
+   neighbor 10.0.250.15 peer group evpn
+   neighbor 10.0.250.15 remote-as 65003
+   neighbor 10.0.250.16 peer group evpn
+   neighbor 10.0.250.16 remote-as 65003
+   neighbor 10.0.250.17 peer group evpn
+   neighbor 10.0.250.17 remote-as 65004
+   neighbor 10.0.250.18 peer group evpn
+   neighbor 10.0.250.18 remote-as 65004
+   !
+   address-family evpn
+      neighbor evpn activate
+   !
+   address-family ipv4
+      neighbor 10.0.1.1 activate
+      neighbor 10.0.1.3 activate
+      neighbor 10.0.1.5 activate
+      neighbor 10.0.1.7 activate
+      neighbor 10.0.1.9 activate
+      neighbor 10.0.1.11 activate
+      neighbor 10.0.1.13 activate
+      neighbor 10.0.1.15 activate
+      network 10.0.250.1/32
+!
+end
+spine1#

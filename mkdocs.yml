@@ -6,6 +6,7 @@ nav:
       - BGP VPLS Deep dive: rs/bgp-vpls.md
       - Cumulus Test Drive: rs/cvx03.md
       - Cumulus In The Cloud: rs/cvx04.md
+      - Arista BGP EVPN: rs/arista-bgp-evpn.md
   - Telemetry:
       - About: telemetry/telemetry.md
       - Securing gNMI with TLS: security/gnmitls.md
@@ -78,6 +79,9 @@ extra:
       link: https://github.com/hellt
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/ntdvps
+  analytics:
+    provider: google
+    property: UA-101537614-4
 
 extra_css:
   - stylesheets/extra.css
@@ -119,7 +123,3 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
-
-google_analytics:
-  - UA-101537614-4
-  - auto
