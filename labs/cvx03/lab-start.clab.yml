@@ -16,13 +16,13 @@ topology:
 
     server01:
       kind: linux
-      image: networkop/host:ignite
+      image: networkop/host:ifreload
       binds:
         - server01/interfaces:/etc/network/interfaces
 
     server02:
       kind: linux
-      image: networkop/host:ignite
+      image: networkop/host:ifreload
       binds:
         - server02/interfaces:/etc/network/interfaces
 
