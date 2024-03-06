@@ -3,10 +3,32 @@
 DirectoryPath: ./site
 IgnoreURLs:
   - fonts.gstatic.com
+  - img.shields.io
+  - www.reddit.com/r/bashonubuntuonwindows/comments/ldbyxa/what_is_the_current_state_of_kvm_acceleration_on/ # sometimes timeouts for unknown reason
+  - goreleaser.com # doesn't support `range 0` GETs which htmltest uses
+  - https://documentation.nokia.com/cgi-bin/dbaccessfilename.cgi/3HE15836AAADTQZZA01_V1_vSIM%20Installation%20and%20Setup%20Guide%2020.10.R1.pdf # fuck this false positives...
+  - https://documentation.nokia.com/cgi-bin/dbaccessfilename.cgi/3HE16113AAAATQZZA01_V1_SR%20Linux%20R20.6%20Software%20Installation.pdf
+  - https://github.com/srl-labs/containerlab/releases/ # gh rate limiters for this particular endpoint are too aggressive
+  - https://github.com/srl-labs/containerlab/pkgs/container/clab
+  - https://linkedin.com/in
+  - https://www.linkedin.com/in
+  - https://*github.com/
+  - https://twitter.com/*
+  - mysocket.io # remove mysocket.io links until we rework to border0.com
+  - https://supportcenter.checkpoint.com/ # started to fail, meh.
+  - https://marketplace.visualstudio.com/*
+  - https://gist.githubusercontent.com/hellt/abc/raw/def/linux.clab.yml # test link used in docs
+  - serverfault.com # returns 403
+  - askubuntu.com # returns 403
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
 IgnoreSSLVerify: true
 IgnoreDirs:
   - overrides
 IgnoreInternalEmptyHash: true
-IgnoreEmptyHref: true
+ExternalTimeout: 60
+HTTPHeaders:
+  "Range": "bytes=0-10"
+  "Accept": "*/*"
+CacheExpires: "168h"
+HTTPConcurrencyLimit: 1

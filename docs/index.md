@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 <p align=center><object type="image/svg+xml" data=https://cdn.jsdelivr.net/gh/srl-labs/containerlab@master/docs/images/containerlab_export_white_ink_js.svg ></object></p>
 
 ---
@@ -7,6 +12,7 @@ Opensource catalog of [containerlab](https://containerlab.srlinux.dev) based lab
 The purpose of this catalog is to aggregate various labs built with [containerlab](https://containerlab.srlinux.dev) project as well as to provide a platform for community members to share their labs and explain various use cases.
 
 ## Categories
+
 A few high-level categories were created to coarsely sort the lab submissions. At this moment the categories are:
 
 * Routing & Switching
@@ -19,6 +25,7 @@ The reason for having a small number of very broad categories is to have a high-
 We encourage visitors to use site search when looking for a specific lab/protocol/technology stack. The search is powerful and will yield better results.
 
 ## Contributions
+
 We believe in the community effort and encourage you to consider contributing your lab to this opensource and unaffiliated catalog.
 
 If you built a lab and you want to have a platform that offers a beautiful front end for your use case explanation consider raising a Pull Request with your submission.

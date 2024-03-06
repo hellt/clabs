@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  MKDOCS_MATERIAL_VER: 7.2.2
+  MKDOCS_MATERIAL_VER: 9.5.9
 
 jobs:
   docs-test:
@@ -21,12 +21,12 @@ jobs:
           ./bin/htmltest -c docs/htmltest.yml
 
   publish:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     needs: docs-test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - run: docker run -v $(pwd):/docs --entrypoint mkdocs squidfunk/mkdocs-material:$MKDOCS_MATERIAL_VER gh-deploy --force --strict
+      - run: docker run -v $(pwd):/docs --entrypoint mkdocs ghcr.io/squidfunk/mkdocs-material:$MKDOCS_MATERIAL_VER gh-deploy --force --strict
