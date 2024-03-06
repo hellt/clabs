@@ -8,6 +8,7 @@
 | **Version information**[^2]   | `containerlab:0.12.0`, `vr-sros:21.2.R1`, `docker-ce:19.03.13`, `vrnetlab:0.2.3`[^3], `gnmic:0.9.0` |
 
 ## Description
+
 Nowadays more and more protocols require a secured transport layer for their operation where TLS is king. Creating a Certificate Authority, public/private keys, certificate signing requests and signing those was a mundane task that most network engineers tried to avoid...
 
 But thanks to the opensource projects like [cfssl](https://github.com/cloudflare/cfssl) it is now less painful to overcome the difficulties of bootstrapping the PKI infra at least in the lab setting. Containerlab embeds parts of cfssl to expose what we consider a critical set of commands that enable our users to quickly set up TLS enabled transports.
@@ -15,6 +16,7 @@ But thanks to the opensource projects like [cfssl](https://github.com/cloudflare
 This lab demonstrates how containerlab' helper commands instantly create the necessary certificates for CA and the SR OS router to enable TLS-secured gNMI communication.
 
 ## Lab deployment
+
 Before we start generating certificates, let's deploy this simple lab which consists of a single Nokia SR OS node with no data interfaces whatsoever.
 
 ```
@@ -32,6 +34,7 @@ Write down the IP address that container engine assigned to our node, as we will
 ```
 
 ## Certificate generation
+
 As promised, containerlab aims to provide a necessary tooling for users to enable TLS transport. In short, we need to create a CA which will sign the certificate of the SR OS node that we will also create.
 For that we will leverage the following containerlab commands:
 
@@ -39,6 +42,7 @@ For that we will leverage the following containerlab commands:
 * [`tools cert sign`](https://containerlab.srlinux.dev/cmd/tools/cert/sign/) - creates certificate/key for a host and signs the certificate with CA
 
 ### Create CA
+
 First we need to create a Certificate Authority that will be able to sign a node's certificate. Leveraging the default values that `ca create` command embeds, we can be as short as this:
 
 ```bash
@@ -49,6 +53,7 @@ containerlab tools cert ca create
 As a result of this command we will have `ca.pem` and `ca-key.pem` files generate in our current working directory. That is all it takes to create a CA.
 
 ### Create and sign node certificate
+
 Next is the node certificate that we need to create and sign with the CA created before. Again, this is pretty simple, we just need to specify the DNS names and IP addresses we want this certificate to be valid for.
 
 Since containerlab creates persistent DNS names for the fully qualified node names, we know that DNS name of our router is `clab-cert01-sr`, which follow the pattern of `clab-<lab-name>-<node-name>`.
@@ -66,13 +71,14 @@ INFO[0000] Creating and signing certificate:
   C=Internet, L=Server, O=Containerlab, OU=Containerlab Tools 
 ```
 
-Here we leveraged [`tools cert sign`](https://containerlab.srlinux.dev/cmd/tools/cert/sign/) command that firstly inits the CA by using the its files `ca.pem` and `ca-key.pem` and then creates a node certificate for the DNS and IP names provided via `hosts` flag. 
+Here we leveraged [`tools cert sign`](https://containerlab.srlinux.dev/cmd/tools/cert/sign/) command that firstly inits the CA by using the its files `ca.pem` and `ca-key.pem` and then creates a node certificate for the DNS and IP names provided via `hosts` flag.
 
 Now, in our working directory we have the signed node's certificate with the file names `cert.pem`, `cert-key.pem` and CA cert and key from the previous step.
 
 Two short commands and you are good to go and configure SR OS to use them.
 
 ## Configuring SR OS
+
 ### Transferring certificate and key
 
 At a minimum we need to transfer the node certificate and key. An extra mile would be to also transfer the CA files to the node, but we will not do that in this lab.
@@ -85,6 +91,7 @@ scp cert.pem admin@clab-cert01-sr:cf3:/
 ```
 
 ### Importing certificate and key
+
 SR OS needs the certificates to be imported after they are copied to the flash card. For that we need to switch to use the Classic CLI notation with `//` command prefix:
 
 ```
@@ -115,6 +122,7 @@ Directory of cf3:\system-pki
 This command verifies that our two files - node' certificate and a matching private key - have been imported successfully.
 
 ### Certificate profile
+
 Next step is to create a certificate profile that will bring the imported certificate file and a its private key under a single logical construct.
 
 ```
@@ -124,6 +132,7 @@ Next step is to create a certificate profile that will bring the imported certif
 ```
 
 ### Ciphers list
+
 Proceed with creating a ciphers list that SR OS will use when negotiating TLS with. We choose a single cipher, though many are available on SR OS to match your client capabilities.
 
 ```
@@ -131,6 +140,7 @@ Proceed with creating a ciphers list that SR OS will use when negotiating TLS wi
 ```
 
 ### Server TLS profile
+
 Finishing step is configuring the specific SR OS construct called "server-tls-profile". It sets which TLS profile, ciphers (and optionally CRL) to use for a specific TLS server configuration.
 
 ```
@@ -139,6 +149,7 @@ Finishing step is configuring the specific SR OS construct called "server-tls-pr
 ```
 
 ### Configuring secured gRPC
+
 Now when TLS objects are all created, we can make gRPC services on SR OS make use of the TLS. To do that, we override the default unsecured gRPC that `vr-sros` uses with a one that uses the tls-server-profile we created earlier:
 
 ```
@@ -176,6 +187,7 @@ commit
 Now gRPC services will require TLS to be used by the clients, let's verify it.
 
 ## Verification
+
 We will use gnmic CLI to issue gNMI RPCs to check if TLS is now really enforced and used.
 
 First, let's use the DNS name that our SR OS node an entry in /etc/hosts for[^4].
@@ -204,14 +216,15 @@ gNMI version: 0.7.0
 <SNIP>
 ```
 
-Feel free to examine the [pcap](https://gitlab.com/rdodin/pics/-/wikis/uploads/f2ab8e8ee7a5cd7f8f03a72528ca87bc/gnmic-tls-sros.pcapng) I captured with [containerlab wireshark integration](https://containerlab.srlinux.dev/manual/wireshark/) that shows the flow of TCP handshake with TLS negotiation for the same gNMI Capabilities request. 
+Feel free to examine the [pcap](https://gitlab.com/rdodin/pics/-/wikis/uploads/f2ab8e8ee7a5cd7f8f03a72528ca87bc/gnmic-tls-sros.pcapng) I captured with [containerlab wireshark integration](https://containerlab.srlinux.dev/manual/wireshark/) that shows the flow of TCP handshake with TLS negotiation for the same gNMI Capabilities request.
 
 ## Summary
+
 Pretty neat, right? With just the two commands ([`tools cert ca create`](https://containerlab.srlinux.dev/cmd/tools/cert/ca/create/) and [`tools cert sign`](https://containerlab.srlinux.dev/cmd/tools/cert/sign/)) we managed to perform a lot of actions in the background which resulted in a signed CA and node certificates.
 
 Those certificates we can now use for any protocol that requires TLS and the certificates are verifiable and legit.
 
-[^1]: Resource requirements are provisional. Consult with the installation guides for additional information. Memory deduplication techniques like [UKSM](https://netdevops.me/2021/how-to-patch-ubuntu-20.04-focal-fossa-with-uksm/) might help with RAM consumption.
+[^1]: Resource requirements are provisional. Consult with the installation guides for additional information. Memory deduplication techniques like [UKSM](https://netdevops.me/2021/how-to-patch-ubuntu-2004-focal-fossa-with-uksm/) might help with RAM consumption.
 [^2]: The lab has been validated using these versions of the required tools/components. Using versions other than stated might lead to a non-operational setup process.
 [^3]: Version of our fork - [hellt/vrnetlab](https://github.com/hellt/vrnetlab) with which the container image of this VM was generated.
 [^4]: the `/etc/hosts` entry is created by containerlab when it deploys the nodes.

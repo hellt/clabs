@@ -23,8 +23,8 @@ In case of gNMI, TLS protocol is used to secure the session between the client a
 
 As streaming telemetry and, consequently, gNMI are getting more popular, outgrowing the labs' simplified environments, operators are getting challenged with a question of **how to enable certificate management for network devices at scale?**
 
-
 ## Certificate management in an operator' network
+
 If you think that creating a CA and signing a few certificates is an easy thing to pull off with something like `openssl` or `certbot`, you might want to reconsider when a network of an operator is concerned.
 
 Network Operating Systems are not suitable to be used for something like `certbot`, as they won't be able to pass ACME challenge, nor DNS one. The manual certificate management with `openssl` can't stand a chance in a network with dozens and hundreds of nodes, this will get unmaintainable rather quickly.
@@ -52,6 +52,7 @@ To make use of CMPv2 we need to have a CA that supports that protocol. This lab 
     The purpose of this lab is to provide a complete environment to demonstrate how CMPv2 can be used to manage certificates in an operator' network.
 
 ## Deploying a lab
+
 As usual with containerlab labs any deployment is a one-click task. Copy this lab' [clab file](https://github.com/hellt/clabs/blob/main/labs/cmpv2/cmp.clab.yml), ensure that you have `_license.txt` file for SR OS node available in your current working directory and deploy.
 
 ```
@@ -80,11 +81,13 @@ INFO[0001] Writing /etc/hosts file
 When the lab starts, the EJBCA enters its initialization routine. You can monitor the progress with `docker logs -f clab-cmp-ejbca`. Once finished, the EJBCA web server will be available via `8443` port.
 
 ## EJBCA Configuration
+
 EJBCA exposes web interface for its configuration. To access the main admin panel we use HTTPS connection over 8443 port - `https://localhost:8443/ejbca/adminweb/` - which is exposed by containerlab to 8443 port of the container host.
 
 ![admin](https://gitlab.com/rdodin/pics/-/wikis/uploads/afe7c909f9d3087a2393428235442683/image.png)
 
 ### CMP Alias
+
 From the EJBCA perspective the CMP protocol configuration is done with creating a "CMP Alias".
 
 On the EJBCA Administration home page, select CMP Configuration in the left hand pane (under System Configuration) and add a CMP Alias; in our case named "CMP-Server".
@@ -96,6 +99,7 @@ Once it is added, select edit, and then in the CMP Authentication Module ensure 
 Select Save at the bottom of the window to commit the CMP configuration.
 
 ### Certificate Profile
+
 The Certificate Profile is a one-off configuration requirement.  
 By default, the EJBCA server uses a certificate profile called `ENDUSER`. This profile sets X.509v3 extensions for Key Usage and Extended Key Usage to TLS Client authentication and Email Protection only.
 
@@ -108,28 +112,30 @@ From the EJBCA Administration home page, select Certificate Profiles under CA Fu
 ![newcertprof](https://gitlab.com/rdodin/pics/-/wikis/uploads/27484b3a14c9a7d1a0e58254622eeaa7/image.png)
 
 ### End Entity Profile
+
 The End Entity Profile is a one-off configuration requirement.
 
 To allow End Entities to use the newly-created Certificate Profile, we need to create an End Entity profile to reference it.
 
 From the EJBCA Administration home page, select End Entity Profiles under RA Functions. Add a new profile, in our case `EE-PROFILE`, and edit the following:
 
-- In the subject DN Attributes pane, use the Subject DN Attributes drop-down menu to add the required parts of the DN. In this case we add Country, State, and Organisation in addition to the existing Common Name. Tick all of them as required.
-- In the Other Subject Attributes pane, use the Subject Alternative Name drop-down menu to add IP Address. Again, tick as required.
-- In the "Main Certificate Data" pane use the drop-down menu for Default Certificate Profile to select the END-ENTITY certificate profile. In the Other subject attributes pain select IP Address as the Subject Alternative Name.  Select Save at the bottom of the screen.
+* In the subject DN Attributes pane, use the Subject DN Attributes drop-down menu to add the required parts of the DN. In this case we add Country, State, and Organisation in addition to the existing Common Name. Tick all of them as required.
+* In the Other Subject Attributes pane, use the Subject Alternative Name drop-down menu to add IP Address. Again, tick as required.
+* In the "Main Certificate Data" pane use the drop-down menu for Default Certificate Profile to select the END-ENTITY certificate profile. In the Other subject attributes pain select IP Address as the Subject Alternative Name.  Select Save at the bottom of the screen.
 
 ![eeprofile](https://gitlab.com/rdodin/pics/-/wikis/uploads/dca50bb1d0d4dca05c3102e7cbaf53d6/image.png)
 
 There is no requirement to enter the Password (or Enrolment Code) in the End Entity Profile. This differs on a per End Entity basis and will therefore be entered at that level.
 
 ### End Entity
+
 End Entity configuration is required for each and every router that will be issued with an X.509 certificate.
 
 From the EJBCA Administration home page, select "Add End Entity" in the left hand pane under RA Functions.
 
 * In the End Entity Profile field select the previously created `EE-PROFILE`
 * The password or enrolment code should be the same value as the CN entered in the Subject DN Attributes section and also in the CMP [Initial-Registration]() request subsequently sourced by the SR-OS node.
-* Complete the subject DN attributes. This example uses Country (C), State (ST), Organisation (O), and Common Name (CN). Again, the same values will be used in the CMP Initial-Registration request subsequently sourced by the SR-OS node. 
+* Complete the subject DN attributes. This example uses Country (C), State (ST), Organisation (O), and Common Name (CN). Again, the same values will be used in the CMP Initial-Registration request subsequently sourced by the SR-OS node.
 * Add the IP address as the subject alternative name so that the issued certificate will also be valid for node's IP address. In our case we will use the management IP address that containerlab assigned for us (172.20.20.5)
 * Select the previously configured END-ENTITY profile as the certificate profile.
 
@@ -138,6 +144,7 @@ From the EJBCA Administration home page, select "Add End Entity" in the left han
 When all fields have been completed, select Add at the bottom of the screen. This completes EJBCA configuration.
 
 ## CA certificate
+
 To let our SR OS node to verify the certificate chain and be able to use CMPv2 protocol with the EJBCA, we need to transfer the CA certificate to it.
 
 CA certificate of the EJBCA server can be downloaded from the Registration Authority server that runs on EJBCA node.
@@ -162,6 +169,7 @@ We will import this certificate into SR OS at a later stage.
 ## SR OS Configuration
 
 ### Keys generation
+
 To create a router's certificate we first need to have a private/public key pair. Many NOS'es allow to generate the keys "on-box", and that is what we will use here:
 
 ```
@@ -175,6 +183,7 @@ The generation process create the keys, but they are not imported yet. To import
 ```
 
 ### CA certificate import
+
 Next step is to import the ManagementCA certificate of EJBCA. We copied it over a few steps before, now let's import it:
 
 ```
@@ -198,6 +207,7 @@ Certificate:
 ```
 
 ### CA profile
+
 Now it is time to touch PKI related configuration on SR OS. We start by configuring CA Profile which defines the Certificate Authority for our SR OS node. This profile will hold the CMPv2 configuration
 
 ```bash
@@ -269,9 +279,10 @@ HTTP version   : 1.1
     64 bytes from 172.20.20.6: icmp_seq=1 ttl=63 time=0.668ms.
     ```
 
-
 ## CMPv2 Protocol Operations
+
 ### Initial Registration
+
 Protocol wise everything starts with Initial Registration message that End Entity (SR OS router) node sends towards CMP server (EJBCA).
 
 Use the following `admin certificate` command to send the CMPv2 initial-registration message and receive a signed certificate from the CA. The protection-algorithm in use is `password`, and the actual password should be equivalent to the value of CN as configured in the [EJBCA End Entity Configuration](#end-entity), as should the values entered in the subject-dn.
@@ -345,6 +356,7 @@ Once the certificate has been passed by the CA, it needs to be imported so that 
 ```
 
 ### Configure & verify secured gNMI
+
 To test that the issued certificate is good to be used for secured gNMI we need to create another SR OS constructs - Certificate Profile and TLS Server Profile.
 
 Readers can refer to ["Securing gNMI with TLS"](https://containerlab.srlinux.dev/lab-examples/tls-cert/) lab which goes into details of this, here we will just repeat the needed commands:
@@ -388,6 +400,7 @@ supported encodings:
 At this stage, we demonstrated how a network node can successfully enroll its certificate that can be used to secure the gNMI communication channel. What we haven't covered yet is the way to manage the certificate lifecycle. That is the goal of the subsequent sections.
 
 ### Certificate Request
+
 A Certificate Request message is used to obtain a new certificate after the End Entity has obtained the initial certificate from the CA. The message flow is similar to that of the Initial Request and consists of the Certificate Request (cr) and Certificate Response (cp), followed by the Certificate Confirmation and PKI Confirmation.
 
 When making the Certificate-Request for a new certificate a requirement is to generate and load the new certificate without having to make any configuration changes to the TLS configuration. At present, the SR OS TLS cert-profile references a certificate with the name of "sr-cert" and a key-pair with the name of "sr-key".
@@ -409,7 +422,7 @@ The certificate request requires generation of a new keypair. Note that when the
 //admin certificate import type key input cf3:/sr-key output sr-key format der
 ```
 
-The syntax of the Certificate Request from the router is similar to that of the Initial Request, with the notable exception that no password protection is required as the digital signature from the previously issued certificate is used as a form of authentication. The command 
+The syntax of the Certificate Request from the router is similar to that of the Initial Request, with the notable exception that no password protection is required as the digital signature from the previously issued certificate is used as a form of authentication. The command
 calls the old keypair as well as the newly-generated keypair, but in this case they refer to the same filename.
 
 !!!note
@@ -486,6 +499,7 @@ Log contents  [size=500   next event=249  (not wrapped)]
 Now we can again check that gNMI client can successfully call the RPCs over a secure channel with a new node certificates in place.
 
 ### Automated certificate renewal
+
 As demonstrated above, Certificate Request message can be used to re-issue a new certificate. Let's close the loop here and create an automated renewal routine that will result in a router to request a new certificate by the time a current one is about to expire.
 
 The SR OS PKI configuration provides an option for generating expiration warnings when a certificate and/or CRL is about to expire. On our node we configured the certificate expiration warning to be 6 hours, with a repeat warning every subsequent hour:
@@ -624,14 +638,15 @@ Total            : 1
 ```
 
 ## Summary
+
 Handling of PKI infrastructure and TLS certificates is a complicated matter when a network of hundreds of nodes is concerned. An automated solution is needed to allow for certificate enrollment and lifecycle management.
 
 CMPv2 protocol is one of the protocols aimed to solve that task in a network infrastructure domain. Being extensively used in 4G and 5G networks, it is also applicable to nodes in the operators network. This lab demonstrated CMPv2 protocol operations and how it can be used to automatically enroll and renew certificates for an SR OS router using EJBCA server.
 
 The benefit of CMPv2 and protocols like it is in their ability to scale without increasing the operational effort. Once configured, the new nodes will come up with their templated configuration and will be able to request certificates and auto-renew them when time comes.
 
-[^1]: Resource requirements are provisional. Consult with the installation guides for additional information. Memory deduplication techniques like [UKSM](https://netdevops.me/2021/how-to-patch-ubuntu-20.04-focal-fossa-with-uksm/) might help with RAM consumption.
+[^1]: Resource requirements are provisional. Consult with the installation guides for additional information. Memory deduplication techniques like [UKSM](https://netdevops.me/2021/how-to-patch-ubuntu-2004-focal-fossa-with-uksm/) might help with RAM consumption.
 [^2]: The lab has been validated using these versions of the required tools/components. Using versions other than stated might lead to a non-operational setup process.
 [^3]: Router images are built with vrnetlab [v0.2.3](https://github.com/hellt/vrnetlab/tree/v0.2.3). To reproduce the image, checkout to this commit and build the relevant images. Note, that you might need to use containerlab of the version that is stated in the description.
-[^4]: https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md#31-session-security-authentication-and-rpc-authorization
+[^4]: <https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md#31-session-security-authentication-and-rpc-authorization>
 [^5]: The protocol is defined in RFC4210, RFC4211 and RFC4212, with further guidance in the transmission of CMP messages over HTTP being defined in RFC6712.
