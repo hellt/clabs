@@ -134,7 +134,7 @@ End Entity configuration is required for each and every router that will be issu
 From the EJBCA Administration home page, select "Add End Entity" in the left hand pane under RA Functions.
 
 * In the End Entity Profile field select the previously created `EE-PROFILE`
-* The password or enrolment code should be the same value as the CN entered in the Subject DN Attributes section and also in the CMP [Initial-Registration]() request subsequently sourced by the SR-OS node.
+* The password or enrolment code should be the same value as the CN entered in the Subject DN Attributes section and also in the CMP Initial-Registration request subsequently sourced by the SR-OS node.
 * Complete the subject DN attributes. This example uses Country (C), State (ST), Organisation (O), and Common Name (CN). Again, the same values will be used in the CMP Initial-Registration request subsequently sourced by the SR-OS node.
 * Add the IP address as the subject alternative name so that the issued certificate will also be valid for node's IP address. In our case we will use the management IP address that containerlab assigned for us (172.20.20.5)
 * Select the previously configured END-ENTITY profile as the certificate profile.
