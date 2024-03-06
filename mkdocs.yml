@@ -6,6 +6,7 @@ nav:
       - BGP VPLS Deep dive: rs/bgp-vpls.md
       - Cumulus Test Drive: rs/cvx03.md
       - Cumulus In The Cloud: rs/cvx04.md
+      - Cumulus 5.x EVPN VXLAN BGP fabric: rs/cvx05.md
       - Arista BGP EVPN: rs/arista-bgp-evpn.md
   - Telemetry:
       - About: telemetry/telemetry.md
