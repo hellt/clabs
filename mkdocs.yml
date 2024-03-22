@@ -12,7 +12,8 @@ nav:
       - About: telemetry/telemetry.md
       - Securing gNMI with TLS: security/gnmitls.md
   - Automation:
-      - coming soon: automation/comingsoon.md
+      - About: automation/automation.md
+      - Network Unit Testing With NUTS: automation/nuts-network-testing.md
   - Security:
       - About: security/security.md
       - Certificate management with CMPv2: security/cmpv2.md
