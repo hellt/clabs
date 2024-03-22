@@ -13,7 +13,7 @@ nav:
       - Securing gNMI with TLS: security/gnmitls.md
   - Automation:
       - About: automation/automation.md
-      - Network Unit Testing: automation/nuts-network-testing.md
+      - Network Unit Testing With NUTS: automation/nuts-network-testing.md
   - Security:
       - About: security/security.md
       - Certificate management with CMPv2: security/cmpv2.md
