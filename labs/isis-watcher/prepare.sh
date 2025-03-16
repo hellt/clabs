@@ -1,4 +1,11 @@
-sudo chown systemd-network:systemd-journal router1/isisd.log
+if [ ! -d "watcher" ]; then
+  mkdir watcher
+fi
+if [ ! -f watcher/watcher.log ]; then
+  touch watcher/watcher.log
+fi
+# reset the log file to a clean slate
+truncate -s0 watcher/watcher.log
 sudo chown systemd-network:systemd-journal watcher/watcher.log
 is_exist=$(brctl show br-dr)
 if [[ -z "$is_exist" ]]; then
