@@ -11,6 +11,7 @@ nav:
   - Telemetry:
       - About: telemetry/telemetry.md
       - Securing gNMI with TLS: security/gnmitls.md
+      - ISIS Watcher: telemetry/isis-watcher.md
   - Automation:
       - About: automation/automation.md
       - Network Unit Testing With NUTS: automation/nuts-network-testing.md
