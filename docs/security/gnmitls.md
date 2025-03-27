@@ -50,7 +50,7 @@ First we need to create a Certificate Authority that will be able to sign a node
 containerlab tools cert ca create
 ```
 
-As a result of this command we will have `ca.pem` and `ca-key.pem` files generate in our current working directory. That is all it takes to create a CA.
+As a result of this command we will have `ca.pem` and `ca.key` files generate in our current working directory. That is all it takes to create a CA.
 
 ### Create and sign node certificate
 
@@ -63,7 +63,7 @@ We will also make our certificate to be valid for the IP address of the node. To
 Knowing the DNS and IP of the node we can create the certificate and key and immediately sign it with the Certificate Authority created earlier. All in one command!
 
 ```bash
-containerlab tools cert sign --ca-cert ca.pem --ca-key ca-key.pem \
+containerlab tools cert sign --ca-cert ca.pem --ca-key ca.key \
              --hosts clab-cert01-sr,172.20.20.2
 
 INFO[0000] Creating and signing certificate:
@@ -86,7 +86,7 @@ At a minimum we need to transfer the node certificate and key. An extra mile wou
 We will transfer the certificate files with SCP, but you can choose any other means:
 
 ```
-scp cert-key.pem admin@clab-cert01-sr:cf3:/
+scp cert.key admin@clab-cert01-sr:cf3:/
 scp cert.pem admin@clab-cert01-sr:cf3:/
 ```
 
@@ -96,7 +96,7 @@ SR OS needs the certificates to be imported after they are copied to the flash c
 
 ```
 //admin certificate import type cert input cf3:/cert.pem output cert.pem format pem
-//admin certificate import type key input cf3:/cert-key.pem output cert-key.pem format pem
+//admin certificate import type key input cf3:/cert.key output cert.key format pem
 ```
 
 When certificates are imported, they are copied to a system `system-pki` directory on the flash card:
@@ -113,7 +113,7 @@ Directory of cf3:\system-pki
 
 03/26/2021  08:50p      <DIR>          ./
 03/26/2021  08:50p      <DIR>          ../
-03/26/2021  08:51p                1256 cert-key.pem
+03/26/2021  08:51p                1256 cert.key
 03/26/2021  08:50p                1095 cert.pem
                2 File(s)                   2351 bytes.
                2 Dir(s)               683569152 bytes free.
@@ -127,7 +127,7 @@ Next step is to create a certificate profile that will bring the imported certif
 
 ```
 /configure system security tls cert-profile sr-cert-prof  entry 1 certificate-file cert.pem
-/configure system security tls cert-profile sr-cert-prof entry 1 key-file cert-key.pem
+/configure system security tls cert-profile sr-cert-prof entry 1 key-file cert.key
 /configure system security tls cert-profile sr-cert-prof admin-state enable
 ```
 
@@ -146,6 +146,7 @@ Finishing step is configuring the specific SR OS construct called "server-tls-pr
 ```
 /configure system security tls server-tls-profile sr-server-tls-prof cert-profile "sr-cert-prof" admin-state enable
 /configure system security tls server-tls-profile sr-server-tls-prof cipher-list "ciphers"
+/configure system security tls server-tls-profileserver-tls-profile "sr-server-tls-prof" admin-state enable
 ```
 
 ### Configuring secured gRPC
