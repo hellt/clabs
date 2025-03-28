@@ -11,6 +11,7 @@ nav:
   - Telemetry:
       - About: telemetry/telemetry.md
       - Securing gNMI with TLS: security/gnmitls.md
+      - OSPF Watcher: telemetry/ospf-watcher.md
       - ISIS Watcher: telemetry/isis-watcher.md
   - Automation:
       - About: automation/automation.md
