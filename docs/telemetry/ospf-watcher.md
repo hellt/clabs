@@ -1,6 +1,6 @@
 # OSPF watcher. Tracking OSPF topology changes in Real-Time
 
-![OSPF watcher containerlab](../../labs/ospf01/ospfwatcher_containerlab.png)
+![OSPF watcher containerlab](https://github.com/Vadims06/ospfwatcher/blob/4b5024e97cb87796ec8f9edf3d63abff0d5ba04a/containerlab/ospf01/ospfwatcher_containerlab.png)
 
 This lab consists of 6 FRR routers and a single OSPF Watcher. Each router is pre-configured to be part of an OSPF domain with different network types. Any topology changes detected by the OSPF Watcher are logged in the file `watcher/watcher.log`. The logging capabilities can be enhanced with tools like ELK or Topolograph, enabling features such as searching changes by time and exporting data to message brokers, Zabbix, and more. For further details, refer to the Links page.
 
