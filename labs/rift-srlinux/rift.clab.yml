@@ -1,0 +1,58 @@
+name: Lab_RIFT
+
+topology:
+  kinds:
+    nokia_srlinux:
+      image: ghcr.io/nokia/srlinux:25.7
+    linux:
+      image: ghcr.io/lldpd/lldpd:latest
+
+  nodes:
+    spine1:
+      kind: nokia_srlinux
+      startup-config: configs/spine1.cfg
+    spine2:
+      kind: nokia_srlinux
+      startup-config: configs/spine2.cfg
+
+    leaf1:
+      kind: nokia_srlinux
+      startup-config: configs/leaf1.cfg
+    leaf2:
+      kind: nokia_srlinux
+      startup-config: configs/leaf2.cfg
+    leaf3:
+      kind: nokia_srlinux
+      startup-config: configs/leaf3.cfg
+
+    Host1:
+      kind: linux
+      exec:
+        - ip address add 10.10.1.10/24 dev eth1
+        - ip route replace default via 10.10.1.1
+    Host2:
+      kind: linux
+      exec:
+        - ip address add 10.10.2.10/24 dev eth1
+        - ip route replace default via 10.10.2.1
+    Host3:
+      kind: linux
+      exec:
+        - ip address add 10.10.3.10/24 dev eth1
+        - ip route replace default via 10.10.3.1
+
+  links:
+    # spine1 hacia los leaves
+    - endpoints: [ "spine1:e1-1", "leaf1:e1-1" ]
+    - endpoints: [ "spine1:e1-2", "leaf2:e1-1" ]
+    - endpoints: [ "spine1:e1-3", "leaf3:e1-1" ]
+
+    # spine2 hacia los leaves
+    - endpoints: [ "spine2:e1-1", "leaf1:e1-2" ]
+    - endpoints: [ "spine2:e1-2", "leaf2:e1-2" ]
+    - endpoints: [ "spine2:e1-3", "leaf3:e1-2" ]
+
+    # hosts
+    - endpoints: [ "leaf1:e1-3", "Host1:eth1" ]
+    - endpoints: [ "leaf2:e1-3", "Host2:eth1" ]
+    - endpoints: [ "leaf3:e1-3", "Host3:eth1" ]
